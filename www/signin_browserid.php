@@ -1,16 +1,41 @@
 <?php
 	include("include/init.php");
+	
+	loadlib("http");
     loadlib("browserid");
 	loadlib("random");
 
-    $browserID = new BrowserID($_SERVER['HTTP_HOST'], $_REQUEST['assertion']);
+   	function send_json($data){
 	
+		$json = json_encode($data);
+		
+		header("Content-type: text/javascript");
+		header("Content-length: " . strlen($json));
+		
+		echo $json;
+		exit();
+	}
 	
-    if($browserID->verify_assertion()) {
+	features_ensure_enabled("signin");
+	
+	if ($GLOBALS['cfg']['user']['id']){
+		$rsp = array('status' => 'fail');
+		send_json($rsp);
+	}
 
-	   $user = users_get_by_email($browserID->getEmail());
-	   
-	   if (!$user['id']){
+	// now we do the verify assertion thing
+
+	$browserID = new BrowserID($_SERVER['HTTP_HOST'], $_REQUEST['assertion']);
+	
+    if (! $browserID->verify_assertion()){
+		$rsp = array('status' => 'fail');
+		send_json($rsp);
+	}
+
+	// check if we already have a user account
+	$user = users_get_by_email($browserID->getEmail());
+	
+	if (!$user['id']){
 			// keep real simple for now... if there is no user, create one
 			$email = $browserID->getEmail();
 			$username = explode("@",$email);
@@ -20,16 +45,20 @@
 				"username" => $username[0],
 				"email" => $email,
 				"password" => $password,
-			));
-		   	
+			));		
 	   }
 		
-	   login_do_login($user);
-	   exit();
+	# SET COOKIES HERE?
 	
-    } else {
+	# OMG - DO NOT LEAVE ME HERE - MAKE SURE THIS IS ONLY EVER PART OF lib_login
+	# something like login_set_login_cookie()
+	
+	$expires = ($GLOBALS['cfg']['enable_feature_persistent_login']) ? strtotime('now +10 years') : 0;
 
-       echo json_encode(array('status'=>'failure','reason'=>$browserID->getReason()));
-    }
-
+	$auth_cookie = login_generate_auth_cookie($user);
+	login_set_cookie($GLOBALS['cfg']['auth_cookie_name'], $auth_cookie, $expires);
+	
+	$rsp = array('status' => 'okay');
+	send_json($rsp);
+	
 ?>
