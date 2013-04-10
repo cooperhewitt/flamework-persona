@@ -45,7 +45,9 @@
 				"username" => $username[0],
 				"email" => $email,
 				"password" => $password,
-			));		
+			));	
+			
+			$user = $user['user'];	
 	   }
 		
 	# SET COOKIES HERE?

@@ -59,7 +59,6 @@
 			if(response.status && response.status == 'okay'){
 				options.email = response.email;
 				window.location = "/";
-				$el.removeClass(options.login_button_class).addClass('options.logout_button_class').text('Logout ('+ response.email +')');
 				$el.off('click.login').on('click.logout',_logout);
 
 				if(typeof options.onlogin === 'function') {
