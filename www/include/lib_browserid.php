@@ -3,6 +3,10 @@
      *  Simple implementation of Mozilla BrowserID
      */
 
+	$GLOBALS['browserid_endpoint'] = 'https://verifier.login.persona.org/verify';
+
+	#################################################################
+
     class BrowserID {
           
           /**
