@@ -3,6 +3,9 @@ Flamework-Persona
 
 Pieces of the puzzle to log in to a Flamework project via Persona/BrowserID
 
+STOP NOW
+=========
+
 This is still very much a work in progress.
 
 Notes
@@ -21,3 +24,5 @@ Workflow for logging in and registering needs lots of work.
 lib_browserid.php needs to be re-formatted.
 
 Need to add option to use self-hosted browserID server/provider.
+
+See also https://github.com/straup/flamework-browserid
