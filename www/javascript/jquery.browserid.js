@@ -58,7 +58,7 @@
 		$.getJSON(options.server, {assertion:options.assertion}, function (response) {
 			if(response.status && response.status == 'okay'){
 				options.email = response.email;
-				window.location = "/";
+				location.reload(); 
 				$el.off('click.login').on('click.logout',_logout);
 
 				if(typeof options.onlogin === 'function') {
